@@ -1,12 +1,14 @@
 import {
-  Body,
   Controller,
   Get,
   NotFoundException,
   Param,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Employee, EmployeeService } from './employee.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('employee')
 export class EmployeeController {
@@ -42,7 +44,9 @@ export class EmployeeController {
   }
 
   @Post('initialize')
-  initializeEmployees(@Body() data: Employee[]) {
+  @UseInterceptors(FileInterceptor('file'))
+  async initializeEmployees(@UploadedFile() file: Express.Multer.File) {
+    const data: Employee[] = await JSON.parse(file.buffer.toString());
     this.employeeService.initializeEmployees(data);
     return { message: 'Employee data has initializes successfully' };
   }

@@ -33,7 +33,7 @@ export class EmployeeService {
     return managersHierarchy;
   }
 
-  private traverseManagersHierarchy(employee: Employee, hierarchy: Empoyee[]) {
+  private traverseManagersHierarchy(employee: Employee, hierarchy: Employee[]) {
     if (employee.managerId !== null) {
       const manager = this.getEmployeeById(employee.managerId);
       if (manager) {
