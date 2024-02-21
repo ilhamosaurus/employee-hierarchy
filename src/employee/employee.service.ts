@@ -43,9 +43,11 @@ export class EmployeeService {
     }
   }
 
-  getDirectReportsCount(id: number): number {
+  getDirectReportsCount(id: number): object {
     const employee = this.getEmployeeById(id);
-    return employee ? employee.directReports.length : 0;
+    const count = employee ? employee.directReports.length : 0;
+
+    return { message: `${employee.name} has ${count} direct reports` };
   }
 
   getIndirectReportsCount(id: number): number {

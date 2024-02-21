@@ -32,7 +32,7 @@ export class EmployeeController {
   }
 
   @Get(':id/direct-reports-count')
-  getDirectReportsCount(@Param('id') id: string): number {
+  getDirectReportsCount(@Param('id') id: string): object {
     const employeeId = parseInt(id, 10);
     return this.employeeService.getDirectReportsCount(employeeId);
   }

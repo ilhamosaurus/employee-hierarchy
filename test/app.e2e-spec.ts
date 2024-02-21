@@ -1,24 +1,53 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
+import * as pactum from 'pactum';
+import { Employee } from 'src/employee/employee.service';
 
-describe('AppController (e2e)', () => {
+describe('Test case e2e', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleRef.createNestApplication();
     await app.init();
+    await app.listen(3123);
+
+    pactum.request.setBaseUrl('http://localhost:3123');
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  afterAll(() => {
+    app.close();
+  });
+
+  describe('correct-employee.json test', () => {
+    it('it should successfully upload file', async () => {
+      return await pactum
+        .spec()
+        .post('/employee/initialize')
+        .withFile('src/json/correct-employees.json')
+        .expectStatus(201)
+        .expectJson({ message: 'Employee data has initializes successfully' })
+        .inspect();
+    });
+
+    it('it shoud return employee detail', async () => {
+      const expectedOutcome: Employee = {
+        id: 2,
+        name: 'darin',
+        managerId: 1,
+        directReports: [4, 5, 6],
+      };
+
+      return await pactum
+        .spec()
+        .get(`/employee/${expectedOutcome.id}`)
+        .expectStatus(200)
+        .expectJsonMatch(expectedOutcome)
+        .inspect();
+    });
   });
 });
