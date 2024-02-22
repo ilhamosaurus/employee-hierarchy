@@ -38,7 +38,7 @@ export class EmployeeController {
   }
 
   @Get(':id/indirect-reports-count')
-  getIndirectReportsCount(@Param('id') id: string): number {
+  getIndirectReportsCount(@Param('id') id: string): object {
     const employeeId = parseInt(id, 10);
     return this.employeeService.getIndirectReportsCount(employeeId);
   }

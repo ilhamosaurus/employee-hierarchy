@@ -22,17 +22,6 @@ export class EmployeeService {
     return this.employees.get(id);
   }
 
-  getManagersHierarchy(id: number): Employee[] {
-    const employee = this.getEmployeeById(id);
-    if (!employee) {
-      throw new NotFoundException('Employee not found');
-    }
-
-    const managersHierarchy: Employee[] = [];
-    this.traverseManagersHierarchy(employee, managersHierarchy);
-    return managersHierarchy;
-  }
-
   private traverseManagersHierarchy(employee: Employee, hierarchy: Employee[]) {
     if (employee.managerId !== null) {
       const manager = this.getEmployeeById(employee.managerId);
@@ -43,6 +32,19 @@ export class EmployeeService {
     }
   }
 
+  getManagersHierarchy(id: number): Employee[] {
+    const employee = this.getEmployeeById(id);
+    if (!employee) {
+      throw new NotFoundException('Employee not found');
+    } else if (employee.managerId === null) {
+      throw new NotFoundException('This employee does not have a manager');
+    }
+
+    const managersHierarchy: Employee[] = [];
+    this.traverseManagersHierarchy(employee, managersHierarchy);
+    return managersHierarchy;
+  }
+
   getDirectReportsCount(id: number): object {
     const employee = this.getEmployeeById(id);
     const count = employee ? employee.directReports.length : 0;
@@ -50,7 +52,7 @@ export class EmployeeService {
     return { message: `${employee.name} has ${count} direct reports` };
   }
 
-  getIndirectReportsCount(id: number): number {
+  getIndirectReportsCount(id: number): object {
     const employee = this.getEmployeeById(id);
     if (!employee) {
       throw new NotFoundException('Employee not found');
@@ -58,7 +60,7 @@ export class EmployeeService {
 
     let count = 0;
     this.traverseIndirectReports(employee, (report) => count++);
-    return count;
+    return { message: `${employee.name} has ${count} indirect reports` };
   }
 
   private traverseIndirectReports(
