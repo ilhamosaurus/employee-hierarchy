@@ -142,4 +142,54 @@ describe('Test case e2e', () => {
         .inspect();
     });
   });
+
+  describe('faulty-employess.json test', () => {
+    it('Should successfully upload a file', async () => {
+      return await pactum
+        .spec()
+        .post('/employee/initialize')
+        .withFile('src/json/faulty-employees.json')
+        .expectStatus(201)
+        .expectJson({ message: 'Employee data has initializes successfully' })
+        .inspect();
+    });
+
+    it('Should not return employee hierarchy', async () => {
+      const employee: Employee = {
+        id: 4,
+        name: 'keane',
+        managerId: null,
+      };
+
+      const expectedOutcome: object = {
+        message: 'This employee does not have a manager',
+      };
+
+      return await pactum
+        .spec()
+        .get(`/employee/${employee.id}/managers`)
+        .expectStatus(404)
+        .expectJsonMatch(expectedOutcome)
+        .inspect();
+    });
+
+    it('Should not return employee hierarchy', async () => {
+      const employee: Employee = {
+        id: 5,
+        name: 'kylee',
+        managerId: null,
+      };
+
+      const expectedOutcome: object = {
+        message: 'This employee does not have a manager',
+      };
+
+      return await pactum
+        .spec()
+        .get(`/employee/${employee.id}/managers`)
+        .expectStatus(404)
+        .expectJsonMatch(expectedOutcome)
+        .inspect();
+    });
+  });
 });
