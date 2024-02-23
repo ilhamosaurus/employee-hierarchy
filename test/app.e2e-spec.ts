@@ -192,4 +192,20 @@ describe('Test case e2e', () => {
         .inspect();
     });
   });
+
+  describe('anoter-faulty-employees.json test', () => {
+    it('Should not be able to upload a file', async () => {
+      return await pactum
+        .spec()
+        .post('/employee/initialize')
+        .withFile('src/json/another-faulty-employees.json')
+        .expectStatus(400)
+        .expectBody({
+          message: 'Duplicate employee linton',
+          error: 'Bad Request',
+          statusCode: 400,
+        })
+        .inspect();
+    });
+  });
 });
