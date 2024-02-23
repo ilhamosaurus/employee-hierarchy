@@ -24,6 +24,10 @@
 
 ## Description
 
+This REST Api is for compeleting take home test from EvidenceCare only. I gladly apriciate if the reviewer of this assignment consider to install the dependency then go for the e2e test first. Thank you for your consideration wish this assignment meet you expectations.
+
+note: for the another-faulty-employees.json i decided to make it an error when there is a double entry for the employee.
+
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
@@ -48,14 +52,8 @@ $ npm run start:prod
 ## Test
 
 ```bash
-# unit tests
-$ npm run test
-
 # e2e tests
 $ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
 ## Support
